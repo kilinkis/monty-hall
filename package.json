@@ -13,7 +13,7 @@
     "test": "pnpm -r --if-present test && node scripts/cli-smoke.mjs",
     "test:cli": "node scripts/cli-smoke.mjs",
     "typecheck": "pnpm -r --if-present typecheck",
-    "deploy": "pnpm build && pnpm --filter @monty-hall/api deploy"
+    "deploy": "pnpm build && pnpm --filter @monty-hall/api run deploy"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

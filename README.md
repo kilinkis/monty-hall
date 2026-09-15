@@ -4,6 +4,11 @@ One Monty Hall simulation engine with three interfaces: an interactive Vue app, 
 
 The web app runs the shared TypeScript engine locally, so simulations are immediate. The API imports the same package for `curl` and other clients, while the CLI imports it for local terminal use.
 
+## Live
+
+- App: https://monty-hall-lab.monty-hall-api.workers.dev
+- API: https://monty-hall-lab.monty-hall-api.workers.dev/api
+
 ## Architecture
 
 ```text
@@ -45,6 +50,8 @@ curl -X POST http://localhost:8787/api/simulate \
   -d '{"trials":10000,"strategy":"both","seed":42}'
 ```
 
+Replace the local origin with the live app URL to call the deployed API.
+
 `strategy` accepts `stay`, `switch`, or `both`. Simulations are capped at 1,000,000 trials per request.
 
 ## Quality checks
@@ -60,7 +67,7 @@ pnpm build
 The Worker configuration serves the built Vue app as static assets and runs API requests through Hono. After authenticating Wrangler with a Cloudflare account:
 
 ```bash
-pnpm deploy
+pnpm run deploy
 ```
 
 This produces a single deployment with the app at `/` and the JSON API at `/api`.
