@@ -15,13 +15,12 @@ import StrategyResult from "./components/StrategyResult.vue";
 type Theme = "dark" | "light";
 
 const trials = ref(100);
-const seed = ref("opening-night");
 const running = ref(false);
 const progress = ref(1);
 const error = ref("");
 const statusMessage = ref("Initial simulation ready.");
 const result = ref<ComparisonResult>(
-  compareStrategies({ trials: trials.value, seed: seed.value }),
+  compareStrategies({ trials: trials.value }),
 );
 const theme = ref<Theme>(preferredTheme());
 let animationFrame: number | undefined;
@@ -64,7 +63,6 @@ function runSimulation(): void {
   try {
     const finalResult = compareStrategies({
       trials: trials.value,
-      seed: seed.value || undefined,
     });
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -141,12 +139,6 @@ function partialStrategy(
   };
 }
 
-function randomizeSeed(): void {
-  const values = new Uint32Array(1);
-  crypto.getRandomValues(values);
-  seed.value = `run-${values[0]?.toString(36) ?? Date.now().toString(36)}`;
-}
-
 function toggleTheme(): void {
   theme.value = theme.value === "dark" ? "light" : "dark";
 }
@@ -204,11 +196,9 @@ function preferredTheme(): Theme {
 
         <SimulationControls
           v-model:trials="trials"
-          v-model:seed="seed"
           :running="running"
           :progress="progress"
           @run="runSimulation"
-          @randomize-seed="randomizeSeed"
         />
 
         <p class="sr-only" aria-live="polite">{{ statusMessage }}</p>
@@ -220,7 +210,6 @@ function preferredTheme(): Theme {
               <p class="command-line"><span class="prompt">&gt;</span> {{ resultLine }}</p>
               <h2 id="results-heading">strategy comparison</h2>
             </div>
-            <p class="seed-output">seed={{ result.seed }}</p>
           </div>
 
           <div class="result-table" role="table" aria-label="Strategy results">
@@ -277,8 +266,7 @@ function preferredTheme(): Theme {
   -H 'Content-Type: application/json' \
   -d '{
     "trials": 10000,
-    "strategy": "both",
-    "seed": 42
+    "strategy": "both"
   }'</code></pre>
             <p class="resource-links">
               <a href="/docs">[open api docs]</a>

@@ -1,15 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
   trials: number;
-  seed: string;
   running: boolean;
   progress: number;
 }>();
 
 const emit = defineEmits<{
   run: [];
-  randomizeSeed: [];
-  "update:seed": [value: string];
   "update:trials": [value: number];
 }>();
 
@@ -18,10 +15,6 @@ const presets = [100, 1_000, 10_000, 100_000];
 function updateTrials(event: Event): void {
   const value = Number((event.target as HTMLInputElement).value);
   emit("update:trials", Math.min(1_000_000, Math.max(1, Math.round(value || 1))));
-}
-
-function updateSeed(event: Event): void {
-  emit("update:seed", (event.target as HTMLInputElement).value);
 }
 
 function compactNumber(value: number): string {
@@ -34,7 +27,7 @@ function compactNumber(value: number): string {
     <p class="command-line"><span class="prompt">$</span> monty-hall simulate</p>
 
     <div class="command-builder">
-      <label class="inline-field">
+      <label class="inline-field trials-field">
         <span>--trials</span>
         <input
           :value="trials"
@@ -47,29 +40,6 @@ function compactNumber(value: number): string {
           @change="updateTrials"
         />
       </label>
-
-      <label class="inline-field seed-field">
-        <span>--seed</span>
-        <input
-          :value="seed"
-          aria-label="Simulation seed"
-          type="text"
-          maxlength="80"
-          :disabled="running"
-          @input="updateSeed"
-        />
-      </label>
-
-      <button
-        class="icon-button"
-        type="button"
-        :disabled="running"
-        aria-label="Generate a new random seed"
-        title="Generate a new seed"
-        @click="emit('randomizeSeed')"
-      >
-        ↻
-      </button>
 
       <button class="execute-button" type="submit" :disabled="running">
         {{ running ? "running…" : "execute ↵" }}
