@@ -163,9 +163,22 @@ function preferredTheme(): Theme {
     <main class="terminal" aria-labelledby="page-title">
       <header class="titlebar">
         <span class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span>monty-hall — simulator</span>
-        <button class="theme-toggle" type="button" @click="toggleTheme">
-          [{{ theme === "dark" ? "light" : "dark" }} mode]
+        <nav class="titlebar-links" aria-label="Project links">
+          <span>monty-hall</span>
+          <a href="/docs">api docs</a>
+          <a
+            href="https://github.com/kilinkis/monty-hall"
+            target="_blank"
+            rel="noreferrer"
+          >github ↗</a>
+        </nav>
+        <button
+          class="theme-toggle"
+          type="button"
+          :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
+          @click="toggleTheme"
+        >
+          [{{ theme === "dark" ? "light" : "dark" }}]
         </button>
       </header>
 
@@ -267,6 +280,14 @@ function preferredTheme(): Theme {
     "strategy": "both",
     "seed": 42
   }'</code></pre>
+            <p class="resource-links">
+              <a href="/docs">[open api docs]</a>
+              <a
+                href="https://github.com/kilinkis/monty-hall"
+                target="_blank"
+                rel="noreferrer"
+              >[view source ↗]</a>
+            </p>
           </article>
         </section>
       </div>

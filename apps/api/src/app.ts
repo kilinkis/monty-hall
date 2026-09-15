@@ -1,7 +1,10 @@
 import { MAX_TRIALS, compareStrategies, simulate } from "@monty-hall/simulation";
+import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { z } from "zod";
+
+import { openApiDocument } from "./openapi";
 
 const requestSchema = z.object({
   trials: z.number().int().min(1).max(MAX_TRIALS).default(100),
@@ -13,9 +16,14 @@ export const app = new Hono();
 
 app.use("/api/*", cors());
 
+app.get("/docs", swaggerUI({ url: "/api/openapi.json" }));
+app.get("/api/openapi.json", (context) => context.json(openApiDocument));
+
 app.get("/api", (context) =>
   context.json({
     name: "Monty Hall Lab API",
+    documentation: "/docs",
+    openapi: "/api/openapi.json",
     endpoints: {
       health: "GET /api/health",
       simulate: "POST /api/simulate",

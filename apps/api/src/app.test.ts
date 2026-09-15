@@ -10,6 +10,22 @@ describe("simulation API", () => {
     await expect(response.json()).resolves.toMatchObject({ status: "ok" });
   });
 
+  it("publishes its OpenAPI contract", async () => {
+    const response = await app.request("http://local.test/api/openapi.json");
+
+    expect(response.status).toBe(200);
+    const document = await response.json<{ paths: Record<string, unknown> }>();
+    expect(document.paths).toHaveProperty("/api/simulate");
+  });
+
+  it("serves interactive API documentation", async () => {
+    const response = await app.request("http://local.test/docs");
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("text/html");
+    await expect(response.text()).resolves.toContain("SwaggerUIBundle");
+  });
+
   it("compares both strategies", async () => {
     const response = await app.request("http://local.test/api/simulate", {
       method: "POST",
