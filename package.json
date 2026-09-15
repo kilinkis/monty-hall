@@ -1,0 +1,27 @@
+{
+  "name": "monty-hall-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One Monty Hall simulation engine with web, API, and CLI interfaces.",
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "scripts": {
+    "build": "pnpm --filter @monty-hall/web build && pnpm --filter @monty-hall/api build && pnpm --filter @monty-hall/cli build",
+    "dev": "pnpm --filter @monty-hall/web dev",
+    "dev:api": "pnpm --filter @monty-hall/api dev",
+    "simulate": "pnpm --filter @monty-hall/cli dev",
+    "test": "pnpm -r --if-present test && node scripts/cli-smoke.mjs",
+    "test:cli": "node scripts/cli-smoke.mjs",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "deploy": "pnpm build && pnpm --filter @monty-hall/api deploy"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.11"
+  },
+  "pnpm": {
+    "overrides": {
+      "tsup>esbuild": "0.28.2"
+    }
+  }
+}
