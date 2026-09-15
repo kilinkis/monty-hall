@@ -17,9 +17,7 @@ Monty Hall Lab demonstrates why switching doors wins roughly twice as often as s
 
 ## The workbench
 
-| Dark mode | Light mode |
-| --- | --- |
-| ![Monty Hall Lab in dark mode](output/playwright/monty-hall-dark.png) | ![Monty Hall Lab in light mode](output/playwright/monty-hall-light.png) |
+![Monty Hall Lab](output/playwright/monty-hall-dark.png)
 
 The browser runs the engine locally—no request or cold start is needed for the interactive simulation. The API and CLI also accept optional seeds when a run needs to be reproducible.
 
