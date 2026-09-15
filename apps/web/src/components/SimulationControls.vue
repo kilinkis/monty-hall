@@ -12,14 +12,13 @@ const emit = defineEmits<{
 
 const presets = [100, 1_000, 10_000, 100_000];
 
-function updateTrials(event: Event): void {
+const updateTrials = (event: Event) => {
   const value = Number((event.target as HTMLInputElement).value);
   emit("update:trials", Math.min(1_000_000, Math.max(1, Math.round(value || 1))));
-}
+};
 
-function compactNumber(value: number): string {
-  return value >= 1_000 ? `${value / 1_000}k` : String(value);
-}
+const compactNumber = (value: number) =>
+  value >= 1_000 ? `${value / 1_000}k` : String(value);
 </script>
 
 <template>

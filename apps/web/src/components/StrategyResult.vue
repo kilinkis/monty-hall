@@ -6,9 +6,7 @@ defineProps<{
   emphasized?: boolean;
 }>();
 
-function percent(value: number): string {
-  return `${(value * 100).toFixed(1)}%`;
-}
+const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 </script>
 
 <template>

@@ -14,27 +14,20 @@ const padding = { top: 18, right: 18, bottom: 36, left: 44 };
 const plotWidth = width - padding.left - padding.right;
 const plotHeight = height - padding.top - padding.bottom;
 
-function x(trial: number): number {
-  return padding.left + (trial / props.totalTrials) * plotWidth;
-}
+const x = (trial: number) => padding.left + (trial / props.totalTrials) * plotWidth;
 
-function y(rate: number): number {
-  return padding.top + (1 - rate) * plotHeight;
-}
+const y = (rate: number) => padding.top + (1 - rate) * plotHeight;
 
-function pathFor(key: "stayWinRate" | "switchWinRate"): string {
-  return props.series
+const pathFor = (key: "stayWinRate" | "switchWinRate") =>
+  props.series
     .map((point, index) => `${index === 0 ? "M" : "L"} ${x(point.trial)} ${y(point[key])}`)
     .join(" ");
-}
 
 const stayPath = computed(() => pathFor("stayWinRate"));
 const switchPath = computed(() => pathFor("switchWinRate"));
 const yTicks = [0, 1 / 3, 2 / 3, 1];
 
-function percent(value: number): string {
-  return `${Math.round(value * 100)}%`;
-}
+const percent = (value: number) => `${Math.round(value * 100)}%`;
 </script>
 
 <template>

@@ -4,7 +4,6 @@ import {
   type ComparisonResult,
   type ConvergencePoint,
   type Strategy,
-  type StrategyResult as StrategyResultData,
 } from "@monty-hall/simulation";
 import { computed, onBeforeUnmount, ref, watchEffect } from "vue";
 
@@ -12,20 +11,22 @@ import ConvergenceChart from "./components/ConvergenceChart.vue";
 import SimulationControls from "./components/SimulationControls.vue";
 import StrategyResult from "./components/StrategyResult.vue";
 
-type Theme = "dark" | "light";
+const preferredTheme = () => {
+  const saved = localStorage.getItem("monty-hall-theme");
+  if (saved === "dark" || saved === "light") return saved;
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+};
 
 const trials = ref(100);
 const running = ref(false);
 const progress = ref(1);
 const error = ref("");
 const statusMessage = ref("Initial simulation ready.");
-const result = ref<ComparisonResult>(
-  compareStrategies({ trials: trials.value }),
-);
-const theme = ref<Theme>(preferredTheme());
+const result = ref(compareStrategies({ trials: trials.value }));
+const theme = ref(preferredTheme());
 let animationFrame: number | undefined;
 
-const leadingStrategy = computed<Strategy | null>(() => {
+const leadingStrategy = computed(() => {
   if (result.value.switch.wins === result.value.stay.wins) return null;
   return result.value.switch.wins > result.value.stay.wins ? "switch" : "stay";
 });
@@ -52,7 +53,7 @@ onBeforeUnmount(() => {
   if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
 });
 
-function runSimulation(): void {
+const runSimulation = () => {
   if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
 
   error.value = "";
@@ -73,7 +74,7 @@ function runSimulation(): void {
     const duration = Math.min(3_200, 1_600 + Math.log10(trials.value) * 320);
     let startedAt: number | undefined;
 
-    const advance = (timestamp: number): void => {
+    const advance = (timestamp: number) => {
       startedAt ??= timestamp;
       const nextProgress = Math.min(1, (timestamp - startedAt) / duration);
       const finalIndex = finalResult.series.length - 1;
@@ -98,21 +99,21 @@ function runSimulation(): void {
     running.value = false;
     statusMessage.value = "Simulation failed.";
   }
-}
+};
 
-function finishSimulation(finalResult: ComparisonResult): void {
+const finishSimulation = (finalResult: ComparisonResult) => {
   result.value = finalResult;
   progress.value = 1;
   running.value = false;
   animationFrame = undefined;
   statusMessage.value = `Simulation complete: ${finalResult.trials.toLocaleString()} trials.`;
-}
+};
 
-function resultAtPoint(
+const resultAtPoint = (
   finalResult: ComparisonResult,
   point: ConvergencePoint,
   seriesIndex: number,
-): ComparisonResult {
+) => {
   const stayWins = Math.round(point.stayWinRate * point.trial);
   const switchWins = point.trial - stayWins;
 
@@ -123,13 +124,13 @@ function resultAtPoint(
     switch: partialStrategy("switch", switchWins, point.trial),
     series: finalResult.series.slice(0, seriesIndex + 1),
   };
-}
+};
 
-function partialStrategy(
+const partialStrategy = (
   strategy: Strategy,
   wins: number,
   completedTrials: number,
-): StrategyResultData {
+) => {
   return {
     strategy,
     wins,
@@ -137,17 +138,11 @@ function partialStrategy(
     winRate: wins / completedTrials,
     expectedWinRate: strategy === "stay" ? 1 / 3 : 2 / 3,
   };
-}
+};
 
-function toggleTheme(): void {
+const toggleTheme = () => {
   theme.value = theme.value === "dark" ? "light" : "dark";
-}
-
-function preferredTheme(): Theme {
-  const saved = localStorage.getItem("monty-hall-theme");
-  if (saved === "dark" || saved === "light") return saved;
-  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-}
+};
 </script>
 
 <template>

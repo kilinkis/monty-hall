@@ -9,6 +9,45 @@ import {
   type Strategy,
 } from "@monty-hall/simulation";
 
+const formatPercent = (value: number) => `${(value * 100).toFixed(1)}%`;
+
+const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const printRow = (label: string, wins: number, losses: number, rate: number) => {
+  const paddedLabel = label.padEnd(8);
+  console.log(
+    `${paddedLabel} ${formatPercent(rate).padStart(6)}  ${String(wins).padStart(8)} wins  ${String(losses).padStart(8)} losses`,
+  );
+};
+
+const fail = (message: string) => {
+  console.error(`Error: ${message}\nRun with --help for usage.`);
+  process.exit(1);
+};
+
+const printHelp = () => {
+  console.log(`
+Monty Hall Lab
+
+Run the classic probability experiment from your terminal.
+
+Usage:
+  monty-hall [options]
+
+Options:
+  -t, --trials <number>       Number of rounds (default: 100)
+  -s, --strategy <strategy>  stay, switch, or both (default: both)
+      --seed <value>          Reproduce an earlier experiment
+      --json                  Print machine-readable JSON
+  -h, --help                  Show this help
+
+Examples:
+  monty-hall --trials 10000
+  monty-hall -t 1000 -s switch --seed portfolio
+  monty-hall -t 100 --json
+`);
+};
+
 const cliArguments = process.argv.slice(2);
 if (cliArguments[0] === "--") cliArguments.shift();
 
@@ -60,46 +99,3 @@ if ("stay" in result) {
 }
 
 console.log("\nTip: switching should converge toward a 66.7% win rate.\n");
-
-function printRow(label: string, wins: number, losses: number, rate: number): void {
-  const paddedLabel = label.padEnd(8);
-  console.log(
-    `${paddedLabel} ${formatPercent(rate).padStart(6)}  ${String(wins).padStart(8)} wins  ${String(losses).padStart(8)} losses`,
-  );
-}
-
-function formatPercent(value: number): string {
-  return `${(value * 100).toFixed(1)}%`;
-}
-
-function capitalize(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function fail(message: string): never {
-  console.error(`Error: ${message}\nRun with --help for usage.`);
-  process.exit(1);
-}
-
-function printHelp(): void {
-  console.log(`
-Monty Hall Lab
-
-Run the classic probability experiment from your terminal.
-
-Usage:
-  monty-hall [options]
-
-Options:
-  -t, --trials <number>       Number of rounds (default: 100)
-  -s, --strategy <strategy>  stay, switch, or both (default: both)
-      --seed <value>          Reproduce an earlier experiment
-      --json                  Print machine-readable JSON
-  -h, --help                  Show this help
-
-Examples:
-  monty-hall --trials 10000
-  monty-hall -t 1000 -s switch --seed portfolio
-  monty-hall -t 100 --json
-`);
-}

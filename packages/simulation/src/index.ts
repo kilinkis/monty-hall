@@ -52,14 +52,7 @@ export interface ComparisonResult {
 
 type Random = () => number;
 
-interface BaseRound {
-  prizeDoor: number;
-  firstChoice: number;
-  openedDoor: number;
-  switchDoor: number;
-}
-
-export function playRound(strategy: Strategy, random: Random = Math.random): RoundResult {
+export const playRound = (strategy: Strategy, random: Random = Math.random) => {
   const round = createRound(random);
   const finalChoice = strategy === "stay" ? round.firstChoice : round.switchDoor;
 
@@ -71,9 +64,9 @@ export function playRound(strategy: Strategy, random: Random = Math.random): Rou
     strategy,
     won: finalChoice === round.prizeDoor,
   };
-}
+};
 
-export function simulate(options: SimulationOptions): SimulationResult {
+export const simulate = (options: SimulationOptions) => {
   validateTrials(options.trials);
   const seed = normalizeSeed(options.seed);
   const random = createSeededRandom(seed);
@@ -88,9 +81,9 @@ export function simulate(options: SimulationOptions): SimulationResult {
     seed,
     ...toStrategyResult(options.strategy, wins, options.trials),
   };
-}
+};
 
-export function compareStrategies(options: ComparisonOptions): ComparisonResult {
+export const compareStrategies = (options: ComparisonOptions) => {
   validateTrials(options.trials);
   const seed = normalizeSeed(options.seed);
   const random = createSeededRandom(seed);
@@ -118,9 +111,9 @@ export function compareStrategies(options: ComparisonOptions): ComparisonResult 
     switch: toStrategyResult("switch", options.trials - stayWins, options.trials),
     series,
   };
-}
+};
 
-function createRound(random: Random): BaseRound {
+const createRound = (random: Random) => {
   const prizeDoor = randomDoor(random);
   const firstChoice = randomDoor(random);
   const hostOptions = [0, 1, 2].filter(
@@ -141,17 +134,15 @@ function createRound(random: Random): BaseRound {
   }
 
   return { prizeDoor, firstChoice, openedDoor, switchDoor };
-}
+};
 
-function randomDoor(random: Random): number {
-  return Math.floor(random() * 3);
-}
+const randomDoor = (random: Random) => Math.floor(random() * 3);
 
-function toStrategyResult(
+const toStrategyResult = (
   strategy: Strategy,
   wins: number,
   trials: number,
-): StrategyResult {
+) => {
   return {
     strategy,
     wins,
@@ -159,15 +150,15 @@ function toStrategyResult(
     winRate: wins / trials,
     expectedWinRate: strategy === "stay" ? 1 / 3 : 2 / 3,
   };
-}
+};
 
-function validateTrials(trials: number): void {
+const validateTrials = (trials: number) => {
   if (!Number.isInteger(trials) || trials < 1 || trials > MAX_TRIALS) {
     throw new RangeError(`trials must be an integer between 1 and ${MAX_TRIALS}`);
   }
-}
+};
 
-function normalizeSeed(seed: Seed | undefined): number {
+const normalizeSeed = (seed: Seed | undefined) => {
   if (typeof seed === "number") {
     if (!Number.isFinite(seed)) throw new TypeError("seed must be a finite number or string");
     return seed >>> 0;
@@ -175,9 +166,9 @@ function normalizeSeed(seed: Seed | undefined): number {
 
   if (typeof seed === "string") return hashString(seed);
   return Math.floor(Math.random() * 0x1_0000_0000) >>> 0;
-}
+};
 
-function hashString(value: string): number {
+const hashString = (value: string) => {
   let hash = 2_166_136_261;
 
   for (let index = 0; index < value.length; index += 1) {
@@ -186,9 +177,9 @@ function hashString(value: string): number {
   }
 
   return hash >>> 0;
-}
+};
 
-function createSeededRandom(seed: number): Random {
+const createSeededRandom = (seed: number) => {
   let state = seed;
 
   return () => {
@@ -198,4 +189,4 @@ function createSeededRandom(seed: number): Random {
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296;
   };
-}
+};
