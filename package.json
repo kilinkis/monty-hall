@@ -4,7 +4,7 @@
   "private": true,
   "description": "One Monty Hall simulation engine with web, API, and CLI interfaces.",
   "type": "module",
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@10.34.6",
   "scripts": {
     "build": "pnpm --filter @monty-hall/web build && pnpm --filter @monty-hall/api build && pnpm --filter @monty-hall/cli build",
     "dev": "pnpm --filter @monty-hall/web dev",
