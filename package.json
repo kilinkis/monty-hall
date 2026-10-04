@@ -16,7 +16,7 @@
     "deploy": "pnpm build && pnpm --filter @monty-hall/api run deploy"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
+    "typescript": "^7.0.0",
     "vitest": "^4.1.11"
   },
   "pnpm": {
